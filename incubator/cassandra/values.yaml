@@ -40,6 +40,11 @@ resources:
     memory: 4Gi
     cpu: 2
 
+## Add a Disruption Budget for the cassandra pods
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 51%
+
 ## Change cassandra configuration paramaters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
 ## Recommended max heap size is 1/2 of system memory
