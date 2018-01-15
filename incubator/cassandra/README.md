@@ -47,6 +47,19 @@ Set cluster size to 5
 helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 incubator/cassandra/
 ```
 
+By default, the cassandra pods will be guarded by a [PodDisruptionBudget][pdb] that is configured to keep the majority
+of the cluster up and running by setting `minAvailable` to `51%`. This can be disabled via the
+`--set podDisruptionBudget.enabled=false` argument. Specific settings for minimum availability can be set via
+`--set podDisruptionBudget.minAvailable={value}`. An example in `values.xml` might look like this:
+
+```yaml
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 3
+```
+
+[pdb]: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/#how-disruption-budgets-work
+
 ## Install Chart with specific resource size
 By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memory which is suitable for development environment.
 If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
@@ -100,6 +113,12 @@ When you want to change the cluster size of your cassandra, you can use the helm
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra
+```
+
+You might also want to tune the disruption budget accordingly, if enabled:
+
+```bash
+helm upgrade --set config.cluster_size=5 --set podDisruptionBudget.minAvailable=3 cassandra incubator/cassandra
 ```
 
 ## Get cassandra status
